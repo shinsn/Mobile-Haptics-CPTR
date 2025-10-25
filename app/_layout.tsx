@@ -1,24 +1,45 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useIsFocused } from "@react-navigation/native";
+import { Tabs } from "expo-router";
+import React, { createContext, useState } from "react";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+type PlayInterface = {
+  pause: boolean,
+  setPause: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+export const JamContext = createContext<PlayInterface | null>(null);
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [pause, setPause] = useState(false);
+  const focused = useIsFocused();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <JamContext.Provider value={{ pause, setPause }}>
+
+      <Tabs
+        screenOptions={{
+          headerShown: false
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Play',
+            tabBarIcon: ({ color }) => <MaterialIcons size={28} name="music-note" color={color} />,
+          }}
+
+        />
+
+        <Tabs.Screen
+          name="stats"
+          options={{
+            title: 'Stats',
+            tabBarIcon: ({ color }) => <MaterialIcons size={28} name="insights" color={color} />,
+
+          }}
+
+        />
+      </Tabs>
+    </JamContext.Provider>
   );
 }
