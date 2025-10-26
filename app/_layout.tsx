@@ -6,16 +6,18 @@ import React, { createContext, useState } from "react";
 type PlayInterface = {
   pause: boolean,
   setPause: React.Dispatch<React.SetStateAction<boolean>>
+  playing: boolean,
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const JamContext = createContext<PlayInterface | null>(null);
 
 export default function RootLayout() {
   const [pause, setPause] = useState(false);
-  const focused = useIsFocused();
+  const [playing, setPlaying] = useState(false);
 
   return (
-    <JamContext.Provider value={{ pause, setPause }}>
+    <JamContext.Provider value={{ pause, setPause, playing, setPlaying }}>
 
       <Tabs
         screenOptions={{

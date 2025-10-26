@@ -1,13 +1,17 @@
+import { useIsFocused } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { Button, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { JamContext } from './_layout';
-import { useIsFocused } from '@react-navigation/native';
 
 export default function PlayScreen() {
-    const [showButton, setShowButton] = useState(true);
+
     const jam = useContext(JamContext);
     const focused = useIsFocused();
+
+    // if not started -> button START JAM
+    // if paused -> button RESUME
+    let buttonTitle = !jam?.playing ? "START JAM" : jam.pause ? "RESUME" : ""
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -19,13 +23,14 @@ export default function PlayScreen() {
                     alignItems: 'center',
                 }}
             >
-                {showButton && (jam?.pause == false) ? (
+                // if jam is NOT playing OR jam is currently pasued
+                {!jam?.playing || jam?.pause ? (
                     <Button
-                        title={showButton ? 'START JAM' : ''}
+                        title={buttonTitle}
                         onPress={() => {
-                            setShowButton(!showButton);
-                            jam?.setPause(!jam.pause);
-                            console.log(jam.pause);
+                            // setShowButton(!showButton);
+                            jam?.setPlaying(true);
+                            jam?.setPause(false);
                         }}
                     />
                 ) : <View
@@ -34,9 +39,9 @@ export default function PlayScreen() {
                         height: 300,
                         backgroundColor: "grey",
                         borderRadius: "50%",
-                    }}
-                >
-                </View>}
+                    }}>
+                </View>
+                }
 
             </View>
         </SafeAreaView>

@@ -1,17 +1,24 @@
-import { useContext, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
 import { JamContext } from "./_layout";
-import { useIsFocused } from "@react-navigation/native";
 
 
 export default function StatsScreen() {
-    // const [correct, setCorrect] = useState<number>(0)
-    // const [incorrect, setIncorrect] = useState<number>(0)
+
     const jam = useContext(JamContext);
     const focused = useIsFocused();
-    if (focused) {
-        jam?.setPause(true);
-    }
+    // if (focused && jam?.playing) {
+    //     console.log("stats focused and playing")
+    //     jam.setPause(true);
+        
+    // }
+    useEffect(() => {
+        if (focused && jam?.playing) {
+            // console.log("stats focused and playing")
+            jam.setPause(true);
+        } 
+    }, [focused])
 
     return (
 
