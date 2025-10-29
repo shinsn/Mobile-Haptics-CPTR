@@ -1,5 +1,4 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useIsFocused } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React, { createContext, useState } from "react";
 
@@ -8,6 +7,8 @@ type PlayInterface = {
   setPause: React.Dispatch<React.SetStateAction<boolean>>
   playing: boolean,
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>
+  start: boolean,
+  setStart: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const JamContext = createContext<PlayInterface | null>(null);
@@ -15,10 +16,10 @@ export const JamContext = createContext<PlayInterface | null>(null);
 export default function RootLayout() {
   const [pause, setPause] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [start, setStart] = useState(false);
 
   return (
-    <JamContext.Provider value={{ pause, setPause, playing, setPlaying }}>
-
+    <JamContext.Provider value={{ pause, setPause, start, setStart, playing, setPlaying }}>
       <Tabs
         screenOptions={{
           headerShown: false
