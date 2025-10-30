@@ -10,10 +10,10 @@ export default function PlayScreen() {
   const focused = useIsFocused();
   const timeoutRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const startBeats = () => {
+  const generateBeats = () => {
     if (!jam) return;
 
-    // 1️⃣ Clear any existing timers
+    // if timeout array is not empty
     timeoutRef.current.forEach(clearTimeout);
     timeoutRef.current = [];
 
@@ -21,36 +21,38 @@ export default function PlayScreen() {
     jam.setPause(false);
     jam.setPlaying(true);
 
-    let beats = 12;
-    const split_array: number[] = [];
+    // random total beats between 12 and 16
+    let beats = Math.floor(Math.random() * (16 - 12) + 12)
+    console.log(`total beats: ${beats}`)
+
+    const split_array: number[] = []
     while (beats > 0) {
       const split = Math.floor(Math.random() * 5) + 1;
       if (beats - split >= 0) {
-        split_array.push(split);
+        split_array.push(split)
         beats -= split;
       }
     }
-    console.log("Beat pattern:", split_array);
+    console.log(split_array);
 
     let timeout = 0;
     for (const beat of split_array) {
       for (let i = 0; i < beat; i++) {
-        timeout += 200; // 200ms between pulses
+        timeout += 200; // small pause
         const pulseId = setTimeout(() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-          console.log("Pulse fired", i, beat);
         }, timeout);
-        timeoutRef.current.push(pulseId);
+        timeoutRef.current.push(pulseId); // push id into array
       }
-      timeout += 1000; 
+      timeout += 1000;  // longer pause
     }
 
     const stopId = setTimeout(() => {
       if (jam) {
         jam.setPlaying(false);
-        jam.setPause(true);
+        // jam.setPause(true);
+        jam.setStart(false);
       }
-      console.log("Jam done");
     }, timeout);
     timeoutRef.current.push(stopId);
   };
@@ -62,6 +64,7 @@ export default function PlayScreen() {
       if (jam) {
         jam.setPause(true);
         jam.setPlaying(false);
+        
       }
     }
   }, [focused]);
@@ -78,14 +81,14 @@ export default function PlayScreen() {
         }}
       >
         {!jam?.playing || jam?.pause ? (
-          <Button title={buttonTitle} onPress={startBeats} />
+          <Button title={buttonTitle} onPress={generateBeats} />
         ) : (
           <View
             style={{
               width: 300,
               height: 300,
               backgroundColor: "grey",
-              borderRadius: 150, // numeric
+              borderRadius: "50%",
             }}
           />
         )}
